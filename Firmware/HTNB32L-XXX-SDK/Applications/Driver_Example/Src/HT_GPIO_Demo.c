@@ -74,7 +74,7 @@ static void HT_GPIO_InitButton(void) {
   GPIO_InitStruct.pull = PAD_InternalPullUp;
   GPIO_InitStruct.instance = BUTTON_INSTANCE;
   GPIO_InitStruct.exti = GPIO_EXTI_ENABLE;
-  GPIO_InitStruct.interrupt_config = GPIO_InterruptFallingEdge;
+  GPIO_InitStruct.interrupt_config = GPIO_InterruptDisabled;
 
   HT_GPIO_Init(&GPIO_InitStruct);
 
@@ -108,12 +108,12 @@ void HT_GPIO_App(void) {
   slpManNormalIOVoltSet(IOVOLT_3_30V);
 
   while(1) {
-
-      if (gpio_exti)
+      
+      if (HT_GPIO_PinRead(BUTTON_INSTANCE, BUTTON_PIN) == 0)
         HT_GPIO_WritePin(LED_GPIO_PIN, LED_INSTANCE, LED_ON);
       else
         HT_GPIO_WritePin(LED_GPIO_PIN, LED_INSTANCE, LED_OFF);
-      
+        
   }
 }
 

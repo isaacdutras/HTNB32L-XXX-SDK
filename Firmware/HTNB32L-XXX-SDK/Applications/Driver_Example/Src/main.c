@@ -11,12 +11,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 #include "main.h"
 
-static HT_Peripheral peripheral_select = I2C_EX;
+static HT_Peripheral peripheral_select = GPIO_EX;
 
 char buff_size[513];
 
