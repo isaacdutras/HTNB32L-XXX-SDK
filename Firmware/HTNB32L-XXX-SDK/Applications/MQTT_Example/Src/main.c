@@ -17,6 +17,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "HT_gpio_qcx212.h"
+#include "ic_qcx212.h"
+#include "HT_ic_qcx212.h"
 
 static uint32_t uart_cntrl = (ARM_USART_MODE_ASYNCHRONOUS | ARM_USART_DATA_BITS_8 | ARM_USART_PARITY_NONE | 
                                 ARM_USART_STOP_BITS_1 | ARM_USART_FLOW_CONTROL_NONE);
@@ -80,11 +82,16 @@ void Task1(void *pvParameters) {
 void Task2(void *pvParameters) {
     while (1)
     {   
-        HT_GPIO_PinWrite(LED_GPIO_PIN, LED_INSTANCE, button_state);
+        HT_GPIO_WritePin(LED_GPIO_PIN, LED_INSTANCE, button_state);
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
+/**
+  \fn          int main_entry(void)
+  \brief       main entry function.
+  \return
+*/
 void main_entry(void) {
     HT_GPIO_InitButton();
     HT_GPIO_InitLed();
