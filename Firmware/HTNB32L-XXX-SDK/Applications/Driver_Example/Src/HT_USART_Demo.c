@@ -17,7 +17,9 @@
 #include "HT_USART_Demo.h"
 
 extern USART_HandleTypeDef huart1;
+extern USART_HandleTypeDef huart2;
 static uint8_t rx_buffer[USART_BUFFER_SIZE] = {0};
+static uint8_t tx_buffer[USART_BUFFER_SIZE] = {0};
 
 volatile uint8_t rx_callback = 0;
 volatile uint8_t tx_callback = 0;
@@ -27,35 +29,48 @@ extern uint8_t *usart_rx_buffer;
 extern uint32_t usart_tx_buffer_size;
 extern uint32_t usart_rx_buffer_size;
 
-void HT_USART_Callback(uint32_t event) {
-    if(event & ARM_USART_EVENT_RECEIVE_COMPLETE)
+void HT_USART_Callback(uint32_t event)
+{
+    if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)
         rx_callback = 1;
-    
-    if(event & ARM_USART_EVENT_TX_COMPLETE)
+
+    if (event & ARM_USART_EVENT_TX_COMPLETE)
         tx_callback = 1;
 }
 
-void HT_USART_App(void) {
+void HT_USART_App(void)
+{
 
     ht_printf("HTNB32L-XXX USART Example\n");
-    
-    while(1) {
+
+    while (1)
+    {
 
         HAL_USART_IRQnEnable(&huart1, (USART_IER_RX_DATA_REQ_Msk | USART_IER_RX_TIMEOUT_Msk | USART_IER_RX_LINE_STATUS_Msk));
-        HAL_USART_Receive_IT(rx_buffer, USART_BUFFER_SIZE-1);
+        HAL_USART_IRQnEnable(&huart2, USART_IER_TX_DATA_REQ_Msk);
+        HAL_USART_Receive_IT(rx_buffer, USART_BUFFER_SIZE - 1);
+        HAL_USART_Transmit_IT(&huart2, tx_buffer, USART_BUFFER_SIZE - 1);
         ht_printf("Waiting for usart rx data...\n");
 
-        while(!rx_callback);
-        rx_callback = 0;
-        
-        ht_printf("Received: %s\n, ", (char *)rx_buffer);
+        while (!rx_callback);
 
-        memset(rx_buffer, 0, sizeof(rx_buffer));
+        rx_callback = 0;
+
+        ht_printf("Received: %s\n, ", (char *)rx_buffer);
 
         HAL_USART_IRQnDisable(&huart1, (USART_IER_RX_DATA_REQ_Msk | USART_IER_RX_TIMEOUT_Msk | USART_IER_RX_LINE_STATUS_Msk));
 
+        HAL_USART_Send(&huart2, (uint8_t *)rx_buffer, USART_BUFFER_SIZE - 1);
+        if (!tx_callback)
+        {
+            tx_callback = 0;
+            ht_printf("Sended: %s\n, ", (char *)rx_buffer);
+            HAL_USART_IRQnDisable(&huart2, USART_IER_TX_DATA_REQ_Msk);
+        }
+
+        memset(rx_buffer, 0, sizeof(rx_buffer));
+
     }
-    
 }
 
 /************************ HT Micron Semicondutores S.A *****END OF FILE****/

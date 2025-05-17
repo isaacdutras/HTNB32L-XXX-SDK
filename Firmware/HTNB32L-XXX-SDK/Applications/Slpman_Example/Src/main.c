@@ -335,6 +335,8 @@ void main_entry(void) {
     BSP_CommonInit();
     osKernelInitialize();
 
+    // slpManGetWakeupSrc();
+
     setvbuf(stdout,NULL,_IONBF,0);
 
     registerAppEntry(HT_AppInit, NULL);

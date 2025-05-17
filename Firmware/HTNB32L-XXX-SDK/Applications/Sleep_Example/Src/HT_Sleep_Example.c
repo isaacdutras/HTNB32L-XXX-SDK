@@ -87,29 +87,80 @@ static void HT_SleepMode1(void) {
 
     HT_TRACE(UNILOG_PLA_DRIVER, main_entry_11, P_WARNING, 1, "Re Boot Up from %u -> Unilog Print OK",boot_flag);
 	uniLogFlushOut(0);
-	
+	slpManGetWakeupSrc();
     while(1);
 }
 
 static void HT_SleepMode2(void) {
+    BootFlag_e boot_flag;
+
     printf("Start Sleep2 Test......\r\n");
     pmuSlpTestExtWakeupSleep2();
+    
+    HT_BSP_Deinit();
+    HT_BSP_Init();
+
+	pmuRestoreBootFlag();
+    boot_flag = pmuGetBootFlag();
+	
+    if(pmuGetSleepedFlag())    //sleeped
+        printf("Test Finish: Sleep1 Success.-BootFrom=%d\r\n",boot_flag);
+    else
+        printf("Test Finish: Failed to Enter Sleep1.\r\n");
+
+    HT_TRACE(UNILOG_PLA_DRIVER, main_entry_11, P_WARNING, 1, "Re Boot Up from %u -> Unilog Print OK",boot_flag);
+	uniLogFlushOut(0);
+	slpManGetWakeupSrc();
 
     printf("Test Failed: Failed to Enter Sleep2.\r\n");
     while(1);
 }
 
 static void HT_HibernateMode1(void) {
+    BootFlag_e boot_flag;
+
     printf("Start Hibernate1 Test......\r\n");
     pmuSlpTestExtWakeupHibernate1();
+    
+    HT_BSP_Deinit();
+    HT_BSP_Init();
+
+	pmuRestoreBootFlag();
+    boot_flag = pmuGetBootFlag();
+	
+    if(pmuGetSleepedFlag())    //sleeped
+        printf("Test Finish: Sleep1 Success.-BootFrom=%d\r\n",boot_flag);
+    else
+        printf("Test Finish: Failed to Enter Sleep1.\r\n");
+
+    HT_TRACE(UNILOG_PLA_DRIVER, main_entry_11, P_WARNING, 1, "Re Boot Up from %u -> Unilog Print OK",boot_flag);
+	uniLogFlushOut(0);
+	slpManGetWakeupSrc();
 
     printf("Test Failed: Failed to Enter Hibernate1.\r\n");
     while(1);
 }
 
 static void HT_HibernateMode2(void) {
+    BootFlag_e boot_flag;
+
     printf("Start Hibernate2 Test......\r\n");
     pmuSlpTestExtWakeupHibernate2();
+
+    HT_BSP_Deinit();
+    HT_BSP_Init();
+
+	pmuRestoreBootFlag();
+    boot_flag = pmuGetBootFlag();
+	
+    if(pmuGetSleepedFlag())    //sleeped
+        printf("Test Finish: Sleep1 Success.-BootFrom=%d\r\n",boot_flag);
+    else
+        printf("Test Finish: Failed to Enter Sleep1.\r\n");
+
+    HT_TRACE(UNILOG_PLA_DRIVER, main_entry_11, P_WARNING, 1, "Re Boot Up from %u -> Unilog Print OK",boot_flag);
+	uniLogFlushOut(0);
+	slpManGetWakeupSrc();
 
     printf("Test Failed: Failed to Enter Hibernate2.\r\n");
     while(1);
